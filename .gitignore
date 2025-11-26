@@ -2,6 +2,9 @@
 .claude/
 CLAUDE.md
 
+# Workspace files
+plugin-timer-message.code-workspace
+
 # PureBasic SDK Template
 Purebasic-sdk-template/
 
