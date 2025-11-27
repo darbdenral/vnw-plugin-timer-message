@@ -9,9 +9,7 @@ plugin-timer-message.code-workspace
 Purebasic-sdk-template/
 
 # Compiled outputs
-*.dll
 *.exe
-*.lib
 *.obj
 
 # PureBasic temporary files
