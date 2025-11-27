@@ -12,10 +12,10 @@ A VisualNEO Win plugin that displays customizable popup messages with auto-close
 
 ## Installation
 
-1. Download `TimerMsg.dll`
-2. Rename it to `TimerMsg.nbp`
-3. Copy to your VisualNEO Win `PlugIns` folder
-4. Restart VisualNEO Win
+1. Download `TimerMsg.dll` or `TimerMsg.nbp`
+2. If you downloaded `TimerMsg.dll` then Rename it to `TimerMsg.nbp`
+3. Copy `TimerMsg.nbp` to your VisualNEO Win `PlugIns` folder
+4. Install the plugin to VisualNEO Win
 
 ## Usage
 
