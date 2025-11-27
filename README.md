@@ -68,6 +68,16 @@ Requires PureBasic 6.21 (x86)
    - Target: x86 (32-bit)
 3. Compile to `TimerMsg.dll`
 
+## Creating Your Own Plugins
+
+Want to create your own VisualNEO Win plugins with PureBasic? Check out the [PureBasic VisualNEO Win Plugin SDK](https://github.com/darbdenral/purebasic-vnw-plugin-sdk) which includes:
+
+- Comprehensive development guide
+- AI prompt templates for quick plugin creation
+- Working examples (basic and advanced)
+- Memory management best practices
+- PureBasic language reference
+
 ## License
 
 Freeware - Free to use in personal and commercial projects
