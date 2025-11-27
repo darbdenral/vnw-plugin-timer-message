@@ -23,6 +23,13 @@ Global g_nbWinHandle.i     ; NeoBook main window handle
 Global g_nbInterface.i     ; NeoBook interface for executing commands
 Global g_nbPlayAction.i    ; NeoBook action script player
 
+; Global pointers for plugin metadata strings (freed in DetachProcess)
+Global *g_PluginTitle
+Global *g_PluginAuthor
+Global *g_PluginHint
+Global *g_ActionName
+Global *g_ActionHint
+
 ; ------------------------------------------------------------
 ; Utility: allocate and fill an NB string
 ; ------------------------------------------------------------
@@ -62,13 +69,13 @@ Declare CallNBSubroutine(subroutineName.s)
 ProcedureDLL _nbInitPlugIn(hWnd.i, *pTitle.Long, *pAuthor.Long, *pHint.Long)
   g_nbWinHandle = hWnd  ; Store the NeoBook window handle
 
-  Protected *t = MakeNBString("Timer Message Plugin")
-  Protected *a = MakeNBString("Brad Larned")
-  Protected *h = MakeNBString("Shows a customizable popup message with a timed autoclose.")
+  *g_PluginTitle  = MakeNBString("Timer Message Plugin")
+  *g_PluginAuthor = MakeNBString("Brad Larned")
+  *g_PluginHint   = MakeNBString("Shows a customizable popup message with a timed autoclose.")
 
-  SetOutPtr_NoFree(*pTitle, *t)
-  SetOutPtr_NoFree(*pAuthor, *a)
-  SetOutPtr_NoFree(*pHint, *h)
+  SetOutPtr_NoFree(*pTitle, *g_PluginTitle)
+  SetOutPtr_NoFree(*pAuthor, *g_PluginAuthor)
+  SetOutPtr_NoFree(*pHint, *g_PluginHint)
 EndProcedure
 
 ; ------------------------------------------------------------
@@ -86,8 +93,8 @@ ProcedureDLL _nbRegisterPlugIn(AddAction.i, AddFile.i, GetVar.i, SetVar.i)
 
   If g_nbAddAction
     ; --- Register our single action ---
-    Protected *name = MakeNBString("PopupMessage_Show")
-    Protected *hint = MakeNBString("Show popup with title, caption, message, button, duration & optional callback.")
+    *g_ActionName = MakeNBString("PopupMessage_Show")
+    *g_ActionHint = MakeNBString("Show popup with title, caption, message, button, duration & optional callback.")
 
     ; Define parameter types
     Protected params.TActionParams
@@ -101,7 +108,7 @@ ProcedureDLL _nbRegisterPlugIn(AddAction.i, AddFile.i, GetVar.i, SetVar.i)
     ; Call: nbAddAction(ID, Name, Hint, @Params, HighIndex, ParamCount)
     ; HighIndex = (Total Parameters - 1) = 5
     ; ParamCount = Total number of parameters = 6
-    CallFunctionFast(g_nbAddAction, 1, *name, *hint, @params, 5, 6)
+    CallFunctionFast(g_nbAddAction, 1, *g_ActionName, *g_ActionHint, @params, 5, 6)
   EndIf
 EndProcedure
 
@@ -422,10 +429,22 @@ Procedure CallNBSubroutine(subroutineName.s)
 EndProcedure
 
 ; ============================================================
-; NOTE: NO AttachProcess() or DetachProcess()
-; The minimal working skeleton proved these are not needed and may cause issues.
-; Windows are properly cleaned up in the event loop before CloseWindow() is called.
+; DLL Lifecycle Management
 ; ============================================================
+ProcedureDLL AttachProcess(Instance.i)
+  ; Called when DLL is loaded - no initialization needed
+EndProcedure
+
+ProcedureDLL DetachProcess(Instance.i)
+  ; Called when DLL is unloaded - free all global string allocations
+  ; Note: Runtime Error 216 may still occur on VisualNEO Win IDE exit
+  ; This is a known Delphi/PureBasic DLL unloading timing issue and is harmless
+  If *g_PluginTitle  : GlobalFree_(*g_PluginTitle)  : *g_PluginTitle  = 0 : EndIf
+  If *g_PluginAuthor : GlobalFree_(*g_PluginAuthor) : *g_PluginAuthor = 0 : EndIf
+  If *g_PluginHint   : GlobalFree_(*g_PluginHint)   : *g_PluginHint   = 0 : EndIf
+  If *g_ActionName   : GlobalFree_(*g_ActionName)   : *g_ActionName   = 0 : EndIf
+  If *g_ActionHint   : GlobalFree_(*g_ActionHint)   : *g_ActionHint   = 0 : EndIf
+EndProcedure
 
 ; IDE Options = PureBasic 6.21 (Windows - x86)
 ; ExecutableFormat = Shared dll
