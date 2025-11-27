@@ -78,4 +78,4 @@ Brad Larned
 
 ## Notes
 
-You may see a Runtime Error 216 when exiting the VisualNEO Win IDE. This is a harmless cleanup quirk between PureBasic and Delphi and does not affect functionality or compiled applications.
+You may see a Runtime Error 216 when exiting the VisualNEO Win IDE. This is a harmless cleanup quirk between PureBasic and VisualNEO Win and does not affect functionality or compiled applications.
